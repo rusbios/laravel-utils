@@ -1,0 +1,31 @@
+{
+    "name": "rusbios/laravel-utils",
+    "description": "RusBios custom Laravel utils",
+    "authors": [
+        {
+            "name": "Ryssia",
+            "email": "info@rusbios.ru"
+        }
+    ],
+    "version": "0.1",
+    "homepage": "https://rusbios.ru/",
+    "require": {
+        "php": "^7.2",
+        "laravel/framework": "^6.2",
+        "ext-json": "*",
+        "ext-posix": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "RusBios\\LUtils\\": "src/"
+        },
+        "classmap": []
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "RusBios\\LUtils\\ModuleServiceProvider"
+            ]
+        }
+    }
+}
