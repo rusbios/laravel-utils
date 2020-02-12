@@ -2,6 +2,7 @@
 
 namespace RusBios\LUtils;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 
 class Head
@@ -75,5 +76,29 @@ class Head
     public static function setRobots($index = false)
     {
         Config::set('head.robots', $index ? static::ROBOTS_INDEX : static::ROBOTS_NOINDEX);
+    }
+
+    /**
+     * @param string $message
+     * @param string $type
+     */
+    public static function addMessage($message, $type = 'info')
+    {
+        $messages = request()->session()->get('messages', []);
+        $messages[] = [
+            'text' => $message,
+            'type' => $type,
+        ];
+        request()->session()->put('messages', $messages);
+    }
+
+    /**
+     * @return array
+     */
+    public static function getMessages()
+    {
+        $messages = request()->session()->get('messages', []);
+        request()->session()->remove('messages');
+        return $messages;
     }
 }
