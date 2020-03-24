@@ -15,4 +15,14 @@ class ConfigModule extends Model
 {
     protected $table = 'config';
     protected $timestamps = false;
+
+    public function getParent()
+    {
+        return $this->hasOne(self::class, 'parent_id');
+    }
+
+    public function getChild()
+    {
+        return $this->hasMany(self::class, 'id', 'parent_id');
+    }
 }
