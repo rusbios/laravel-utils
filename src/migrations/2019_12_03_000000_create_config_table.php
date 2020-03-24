@@ -8,13 +8,6 @@ class CreateConfigTable extends Migration
 {
     public function up()
     {
-<<<<<<< Updated upstream
-        Schema::create('config', function (Blueprint $table) {
-            $table->string('name')->unique()->index();
-            $table->timestamps();
-            $table->json('param');
-        });
-=======
         Schema::create('configs', function (Blueprint $table) {
             $table->increments('id');
             $table->string('key')->index();
@@ -36,7 +29,6 @@ class CreateConfigTable extends Migration
                 ['key' => 'type', 'parent_id' => $headId, 'value' => Head::DEFAULT_TYPE],
             ]);
         });
->>>>>>> Stashed changes
     }
 
     public function down()

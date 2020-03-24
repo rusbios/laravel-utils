@@ -136,11 +136,10 @@ abstract class BaseAdminController extends Controller
     }
 
     /**
-     * @param Request $request
      * @param int $id
      * @return JsonResponse
      */
-    public function deleted(Request $request, int $id)
+    public function deleted(int $id)
     {
         $entity = $this->getModel($id);
         $entity->delete();

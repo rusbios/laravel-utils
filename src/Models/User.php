@@ -37,7 +37,7 @@ class User extends \App\Models\User
         self::CREATED_AT => 'datetime',
         self::UPDATED_AT => 'datetime',
         'phone_verified_at' => 'datetime',
-        "deleted_at" => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     public function setPhoneAttribute($value)
