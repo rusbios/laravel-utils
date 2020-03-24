@@ -7,7 +7,7 @@
             "email": "info@rusbios.ru"
         }
     ],
-    "version": "0.1",
+    "version": "0.2.0",
     "homepage": "https://rusbios.ru/",
     "require": {
         "php": "^7.2",
@@ -24,7 +24,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "RusBios\\LUtils\\ModuleServiceProvider"
+                "RusBios\\LUtils\\ServiceProvider"
             ]
         }
     }
