@@ -11,13 +11,15 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         Config::loadAll(env('RB_CONFIG_PATH'));
 
-        $this->loadMigrationsFrom([
+        /*$this->loadMigrationsFrom([
             __DIR__ . '/migrations/2019_12_03_000000_create_config_table.php',
             __DIR__ . '/migrations/2020_03_01_000000_updated_users_table.php',
             __DIR__ . '/migrations/2020_02_16_152122_create_articles_table.php'
-        ]);
+        ]);*/
 
-        view()->setPath(__DIR__ . '/views');
+        $this->loadMigrationsFrom(__DIR__ . '/migrations');
+
+        $this->loadViewsFrom(__DIR__ . '/views', 'admin');
 
         $this->loadRoutesFrom(__DIR__ . '/router.php');
 
