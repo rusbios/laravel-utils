@@ -22,16 +22,29 @@ class Config extends Model
     /**
      * load all configuration or parent and child
      *
-     * @param string|null $path
+     * @param array|null $path
      * @param int|null $id
      */
-    public static function loadAll($path = null, $id = null)
+    public static function loadAll(array $path = [], $id = null)
     {
         $configs = $id ? [static::find($id)] : static::query()->whereNull('parent_id')->get();
         foreach ($configs as $config) {
-            $newPath = join('.', array_filter([$path, $config->key]));
-            FConfig::push($newPath, $config->value);
-            //static::loadAll($newPath, $config->id);
+            $newPath = array_filter($path);
+            $newPath[] = $config->key;
+            if ($config->value) FConfig::set(join('.', $newPath), $config->value);
+            foreach ($config->getChild()->get() as $childConfig) {
+                static::loadAll($newPath, $childConfig->id);
+            }
         }
+    }
+
+    public function getParent()
+    {
+        return $this->hasOne(self::class, 'id', 'parent_id');
+    }
+
+    public function getChild()
+    {
+        return $this->hasMany(self::class, 'parent_id');
     }
 }

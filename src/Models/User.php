@@ -24,11 +24,13 @@ class User extends \App\Models\User
 
     const ROLE_ADMIN = 'admin';
     const ROLE_USER = 'user';
+    const ROLE_MANAGER = 'manager';
 
     const ROLE_DEFAULT = self::ROLE_USER;
 
     const ROLES = [
         self::ROLE_USER,
+        self::ROLE_MANAGER,
         self::ROLE_ADMIN,
     ];
 

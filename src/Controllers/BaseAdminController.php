@@ -55,20 +55,12 @@ abstract class BaseAdminController extends Controller
     const ENTITY_NAME = 'EntityModel';
 
     /**
-     * BaseAdminController constructor.
-     */
-    public function __construct()
-    {
-        $this->middleware(['admin']);
-    }
-
-    /**
      * @param Request $request
      * @return Factory|View
      */
     public function index(Request $request)
     {
-        return view(sprintf('admin.%s.index', static::URI), $request->all());
+        return view(sprintf('rb_admin::%s.index', static::URI), $request->all());
     }
 
     /**
@@ -167,7 +159,9 @@ abstract class BaseAdminController extends Controller
                 env('RB_BASE_URI_ADMIN', 'admin'),
                 static::URI,
                 $route['uri'],
-            ])), sprintf('%s@%s', static::class, $route['method']))->name(join('-', [
+            ])), sprintf('%s@%s', static::class, $route['method']))
+                ->middleware(['rb_admin'])
+                ->name(join('-', [
                 'admin',
                 static::URI,
                 $route['method']

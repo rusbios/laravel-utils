@@ -2,7 +2,6 @@
 
 namespace RusBios\LUtils;
 
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 
 class Head

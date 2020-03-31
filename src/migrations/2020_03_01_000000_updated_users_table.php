@@ -17,14 +17,17 @@ class UpdatedUsersTable extends Migration
             $table->softDeletes();
         });
 
-        $admin = User::firstOrCreate([
-            'email' => env('ADMIN_EMAIL', 'info@rusbios.ru')
-        ]);
-        if (!$admin->name) $admin->name = 'Admin';
-        if (env('ADMIN_PASSWORD')) $admin->password = Hash::make(env('ADMIN_PASSWORD'));
-        if (!$admin->password) throw new Exception('empty admin password');
-        $admin->role = User::ROLE_ADMIN;
-        $admin->save();
+        if (env('ADMIN_EMAIL')) {
+            $admin = User::firstOrCreate([
+                'email' => env('ADMIN_EMAIL')
+            ], [
+                'name' => env('ADMIN_NAME', 'Admin'),
+                'password' => Hash::make('admin'),
+            ]);
+            $admin->role = User::ROLE_ADMIN;
+            if (env('ADMIN_PASSWORD')) $admin->password = Hash::make(env('ADMIN_PASSWORD'));
+            $admin->save();
+        }
     }
 
     public function down()
