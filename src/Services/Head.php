@@ -1,6 +1,6 @@
 <?php
 
-namespace RusBios\LUtils;
+namespace RusBios\LUtils\Services;
 
 use Illuminate\Support\Facades\Config;
 

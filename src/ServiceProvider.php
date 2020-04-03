@@ -4,6 +4,7 @@ namespace RusBios\LUtils;
 
 use RusBios\LUtils\Middleware\Admin;
 use RusBios\LUtils\Models\Config;
+use RusBios\LUtils\Services\Menu;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
@@ -21,5 +22,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->loadRoutesFrom(__DIR__ . '/router.php');
 
         $this->app['router']->aliasMiddleware('rb_admin', Admin::class);
+
+        $this->app->singleton(Menu::class);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace RusBios\LUtils;
+namespace RusBios\LUtils\Services;
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;

@@ -35,6 +35,7 @@ class User extends \App\Models\User
     ];
 
     protected $casts = [
+        'phone' => 'int',
         'email_verified_at' => 'datetime',
         self::CREATED_AT => 'datetime',
         self::UPDATED_AT => 'datetime',
@@ -42,14 +43,31 @@ class User extends \App\Models\User
         'deleted_at' => 'datetime',
     ];
 
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'phone',
+        'role',
+    ];
+
     public function setPhoneAttribute($value)
     {
-        $this->phone = (int) $value;
+        if (static::validationPhone($value)) {
+            $this->phone = (int) $value;
+            return true;
+        }
+
+        return false;
     }
 
-    public function getPhoneAttribute()
+    /**
+     * @param mixed $value
+     * @return string|null
+     */
+    public function getPhoneAttribute($value)
     {
-        return "+$this->phone";
+        return $value ? "+$value" : null;
     }
 
     /**

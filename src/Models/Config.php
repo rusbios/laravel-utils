@@ -18,6 +18,10 @@ class Config extends Model
 
     const CREATED_AT = null;
     const UPDATED_AT = null;
+    
+    protected $casts = [
+        'parent_id' => 'int',
+    ];
 
     /**
      * load all configuration or parent and child

@@ -99,6 +99,7 @@ class Article extends Model
         self::CREATED_AT => 'datetime',
         self::UPDATED_AT => 'datetime',
         'deleted_at' => 'datetime',
+        'disabled' => 'bool',
     ];
 
     /**
@@ -108,7 +109,7 @@ class Article extends Model
     public static function getByUri($uri)
     {
         return static::query()
-            ->where('uri', $uri)
+            ->where('uri', '=', $uri)
             ->whereNull('deleted_at')
             ->first();
     }

@@ -1,6 +1,7 @@
 ### .env.example
-`ADMIN_EMAIL=`
 
+`ADMIN_NAME=`
+`ADMIN_EMAIL=`
 `ADMIN_PASSWORD=`
 
 `RB_CONFIG_PATH=`

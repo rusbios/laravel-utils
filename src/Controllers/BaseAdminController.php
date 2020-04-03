@@ -3,12 +3,16 @@
 namespace RusBios\LUtils\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\TestJob;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\View\View;
+use RusBios\LUtils\Services\Head;
+use RusBios\LUtils\Services\Menu;
+use RusBios\LUtils\Services\Table;
 
 abstract class BaseAdminController extends Controller
 {
@@ -54,13 +58,39 @@ abstract class BaseAdminController extends Controller
     /** @var string */
     const ENTITY_NAME = 'EntityModel';
 
+    /** @var string */
+    const MENU_NAME = '';
+
+    /** @var string */
+    const MENU_DESCRIPTION = '';
+
+    /** @var null|int */
+    const MENU_ORDER = null;
+
     /**
      * @param Request $request
      * @return Factory|View
      */
     public function index(Request $request)
     {
-        return view(sprintf('rb_admin::%s.index', static::URI), $request->all());
+        return $this->getTable($request);
+    }
+
+    /**
+     * @param Request $request
+     * @param array|null $heater
+     * @param array|null $mutation
+     * @return Factory|View
+     */
+    protected function getTable(Request $request, array $heater = [], array $mutation = [])
+    {
+        Head::setTitle(sprintf('%s - %s', static::MENU_NAME, AdminController::MENU_NAME));
+        Head::setDescription(static::MENU_DESCRIPTION);
+
+        $entity = static::ENTITY_NAME;
+        $table = (new Table($request))->setBuilder($entity::query(), $heater, $mutation);
+
+        return view(sprintf('rb_admin::%s.index', static::URI), ['table' => $table]);
     }
 
     /**
@@ -154,13 +184,20 @@ abstract class BaseAdminController extends Controller
      */
     static function route()
     {
+        app()->make(Menu::class)->add(
+            sprintf('%s/%s', env('RB_BASE_URI_ADMIN', 'admin'), static::URI),
+            static::MENU_NAME,
+            static::MENU_DESCRIPTION,
+            static::MENU_ORDER,
+        );
+
         foreach (static::ROUTES as $route) {
             Route::match($route['match'], join('/', array_filter([
                 env('RB_BASE_URI_ADMIN', 'admin'),
                 static::URI,
                 $route['uri'],
             ])), sprintf('%s@%s', static::class, $route['method']))
-                ->middleware(['rb_admin'])
+                //->middleware(['rb_admin'])
                 ->name(join('-', [
                 'admin',
                 static::URI,

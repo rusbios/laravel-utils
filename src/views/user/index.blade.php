@@ -1,5 +1,5 @@
 @extends('rb_admin::base_html')
 
 @section('body')
-    <p>User</p>
+    @include('rb_admin::info.table')
 @endsection
