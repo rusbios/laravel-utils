@@ -22,10 +22,9 @@ class UpdatedUsersTable extends Migration
                 'email' => env('ADMIN_EMAIL')
             ], [
                 'name' => env('ADMIN_NAME', 'Admin'),
-                'password' => Hash::make('admin'),
+                'password' => Hash::make(env('ADMIN_PASSWORD', 'admin')),
             ]);
             $admin->role = User::ROLE_ADMIN;
-            if (env('ADMIN_PASSWORD')) $admin->password = Hash::make(env('ADMIN_PASSWORD'));
             $admin->save();
         }
     }

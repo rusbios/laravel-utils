@@ -28,6 +28,7 @@
             </th>
         @endforeach
         <th>
+            <a href="" class="btn btn-outline-primary" title="Новая сущность"><i class="fas fa-plus-circle"></i></a>
             <button type="submit" class="btn btn-info" title="Обновить"><i class="fas fa-sync-alt"></i></button>
         </th>
     </tr>
@@ -40,7 +41,12 @@
                 <td>{!! $td !!}</td>
             @endforeach
             <td>
-                <a href="#" class="btn btn-primary btn-sm"><i class="far fa-edit"></i></a>
+                @foreach($table->getButtons() as $button)
+                    <a href="{{ sprintf($button['link_pattern'], $key) }}"
+                       class="btn btn-{{ $button['color'] }} btn-sm" title="{{ $button['title'] }}">
+                        {!! $button['icon'] ?: $button['title'] !!}
+                    </a>
+                @endforeach
             </td>
         </tr>
     @endforeach

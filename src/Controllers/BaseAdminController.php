@@ -3,11 +3,11 @@
 namespace RusBios\LUtils\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\TestJob;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use Illuminate\View\View;
 use RusBios\LUtils\Services\Head;
@@ -28,28 +28,33 @@ abstract class BaseAdminController extends Controller
         [
             'match' => ['get'],
             'uri' => '{id}',
-            'method' => 'entity',
+            'method' => 'show',
         ],
         [
             'match' => ['post'],
             'uri' => 'search',
-            'method' => 'entities',
+            'method' => 'showList',
         ],
         [
             'match' => ['post'],
             'uri' => null,
-            'method' => 'created',
+            'method' => 'store',
         ],
         [
             'match' => ['put'],
             'uri' => '{id}',
-            'method' => 'updated',
+            'method' => 'update',
         ],
         [
             'match' => ['delete'],
             'uri' => '{id}',
-            'method' => 'deleted',
+            'method' => 'destroy',
         ],
+        [
+            'match' => ['get'],
+            'uri' => 'edit/{id?}',
+            'method' => 'showEdit',
+        ]
     ];
 
     /** @var string */
@@ -78,27 +83,10 @@ abstract class BaseAdminController extends Controller
 
     /**
      * @param Request $request
-     * @param array|null $heater
-     * @param array|null $mutation
-     * @return Factory|View
-     */
-    protected function getTable(Request $request, array $heater = [], array $mutation = [])
-    {
-        Head::setTitle(sprintf('%s - %s', static::MENU_NAME, AdminController::MENU_NAME));
-        Head::setDescription(static::MENU_DESCRIPTION);
-
-        $entity = static::ENTITY_NAME;
-        $table = (new Table($request))->setBuilder($entity::query(), $heater, $mutation);
-
-        return view(sprintf('rb_admin::%s.index', static::URI), ['table' => $table]);
-    }
-
-    /**
-     * @param Request $request
      * @param int $id
      * @return JsonResponse
      */
-    public function entity(Request $request, int $id)
+    public function show(Request $request, int $id)
     {
         return response()->json([
             'entity' => $this->getModel($id),
@@ -110,7 +98,7 @@ abstract class BaseAdminController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function entities(Request $request)
+    public function showList(Request $request)
     {
         $entity = $this->getModel();
         $builder = $entity::query();
@@ -134,7 +122,7 @@ abstract class BaseAdminController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function created(Request $request)
+    public function store(Request $request)
     {
         $entity = $this->getModel();
         $entity->fill($request->all());
@@ -148,7 +136,7 @@ abstract class BaseAdminController extends Controller
      * @param int $id
      * @return JsonResponse
      */
-    public function updated(Request $request, int $id)
+    public function update(Request $request, int $id)
     {
         $entity = $this->getModel($id);
         $entity->fill($request->all());
@@ -161,7 +149,7 @@ abstract class BaseAdminController extends Controller
      * @param int $id
      * @return JsonResponse
      */
-    public function deleted(int $id)
+    public function destroy(int $id)
     {
         $entity = $this->getModel($id);
         $entity->delete();
@@ -171,12 +159,51 @@ abstract class BaseAdminController extends Controller
 
     /**
      * @param int|null $id
+     * @return Factory|View
+     */
+    public function showEdit(int $id = null)
+    {
+        return view(sprintf('rb_admin::%s.edit', static::URI), [
+            'entity' => $this->getModel($id),
+            'url_save' => route(sprintf('admin-%s-update', static::URI), $id),
+            'title' => sprintf('Редактор %s', static::MENU_NAME),
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param array|null $heater
+     * @param array|null $mutation
+     * @param array $buttons
+     * @return Factory|View
+     */
+    protected function getTable(Request $request, array $heater = [], array $mutation = [], array $buttons = [])
+    {
+        Head::setTitle(sprintf('%s - %s', static::MENU_NAME, AdminController::MENU_NAME));
+        Head::setDescription(static::MENU_DESCRIPTION);
+
+        $table = (new Table($request))->setBuilder((static::ENTITY_NAME)::query(), $heater, $mutation);
+        foreach ($buttons as $button) {
+            if (Arr::exists($button, 'link_pattern')) {
+                $table->addButton(
+                    Arr::get($button, 'link_pattern'),
+                    Arr::get($button, 'title'),
+                    Arr::get($button, 'icon'),
+                    Arr::get($button, 'color')
+                );
+            }
+        }
+
+        return view(sprintf('rb_admin::%s.index', static::URI), ['table' => $table]);
+    }
+
+    /**
+     * @param int|null $id
      * @return Model
      */
     protected function getModel($id = null)
     {
-        $entity = static::ENTITY_NAME;
-        return $entity::findOrNew($id);
+        return (static::ENTITY_NAME)::findOrNew($id);
     }
 
     /**

@@ -32,6 +32,9 @@ class Table
     /** @var Model */
     protected $builder;
 
+    /** @var array */
+    protected $buttons = [];
+
     /**
      * Table constructor.
      * @param Request $request
@@ -86,6 +89,33 @@ class Table
             $this->addRow($item->getKey(), $row);
         }
         return $this;
+    }
+
+    /**
+     * @param string $linkPattern
+     * @param string|null $title
+     * @param string|null $icon
+     * @param string|null $color
+     * @return Table
+     */
+    public function addButton($linkPattern, $title = null, $icon = null, $color = null)
+    {
+        $this->buttons[] = [
+            'link_pattern' => $linkPattern,
+            'title' => $title ?: 'Перейти',
+            'icon' => $icon,
+            'color' => $color ?: 'info',
+        ];
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getButtons()
+    {
+        return $this->buttons;
     }
 
     /**

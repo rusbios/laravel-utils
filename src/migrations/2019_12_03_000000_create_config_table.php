@@ -2,7 +2,10 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use RusBios\LUtils\Models\Config;
+use RusBios\LUtils\Services\Head;
 
 class CreateConfigTable extends Migration
 {
@@ -18,9 +21,9 @@ class CreateConfigTable extends Migration
         });
 
         DB::transaction(function () {
-            $headId = DB::table('configs')->insertGetId(['key' => 'head']);
-            $systemId = DB::table('configs')->insertGetId(['key' => 'system']);
-            DB::table('configs')->insert([
+            $headId = Config::query()->insertGetId(['key' => 'head']);
+            $systemId = Config::query()->insertGetId(['key' => 'system']);
+            Config::query()->insert([
                 ['key' => 'title', 'parent_id' => $headId, 'value' => config('app.name')],
                 ['key' => 'description', 'parent_id' => $headId, 'value' => null],
                 ['key' => 'keywords', 'parent_id' => $headId, 'value' => null],
@@ -28,13 +31,13 @@ class CreateConfigTable extends Migration
                 ['key' => 'url', 'parent_id' => $headId, 'value' => config('add.url')],
                 ['key' => 'robots', 'parent_id' => $headId, 'value' => Head::ROBOTS_NOINDEX],
                 ['key' => 'type', 'parent_id' => $headId, 'value' => Head::DEFAULT_TYPE],
-                ['key' => 'rb_menu_cache', ' parent_id' => $systemId, 'value' => false]
+                ['key' => 'rb_menu_cache', 'parent_id' => $systemId, 'value' => false],
             ]);
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('config');
+        Schema::dropIfExists('configs');
     }
 }

@@ -31,6 +31,8 @@ class UserAdminController extends BaseAdminController
             'created_at' => function (string $keyName, array $row) {
                 return Table::dateFormat(new \DateTime($row['created_at']));
             }
+        ], [
+            ['link_pattern' => route('admin-user-showEdit', '%s')   , 'title' => 'Редактировать', 'icon' => '<i class="far fa-edit"></i>', 'color' => 'primary'],
         ]);
     }
 }
